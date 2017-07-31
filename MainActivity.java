@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.graphics.*;
 import android.widget.Toast;
 import android.util.Log;
-
+import android.app.Activity;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import java.io.File;
@@ -22,9 +22,10 @@ import java.io.IOException;
 import android.content.Context;
 import android.content.*;
 import android.net.Uri;
-
+import android.widget.ArrayAdapter;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity {
     Button b1, b2;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MyFirebaseIIDService";
     public String Readfilename;
     public String Readfilenamefull;
+    private Context mContext;
+
 
 
     //tokengeneration//
@@ -102,7 +105,18 @@ public class MainActivity extends AppCompatActivity {
                 } else{
                     Toast.makeText(getApplicationContext(), "File path is incorrect.", Toast.LENGTH_LONG).show();
             }*/
+                String filename = "temp";
+                File myDirect = getFilesDir();
+                File Specificdir = new File(myDirect,filename);
+                File[] files = Specificdir.listFiles();
+                //int count = 0;
+                //for(int i =1; i<=files.length; i++)
 
+                ArrayAdapter adapter = new ArrayAdapter<String>(this,
+                        R.layout.activity_listview, files);
+
+                ListView listView = (ListView) findViewById(R.id.Specificdir);
+                listView.setAdapter(adapter);
                 getfilename();
             }
 
@@ -139,22 +153,22 @@ public void createTemp()
     {
         String filename = "temp";
         File myDirect = getFilesDir();
-        File dir = new File(myDirect,filename);
-        File[] files = dir.listFiles();
+        File Tempdir = new File(myDirect,filename);
+        File[] files = Tempdir.listFiles();
         int count = 0;
         for(int i =1; i<=files.length; i++)
         {
             System.out.println(files[count].getName());
             String Readfilenamefull = files[count].getName();
             String Readfilename = FilenameUtils.getBaseName(Readfilenamefull);
-            splitname(Readfilename,Readfilenamefull);
+            splitname(Readfilename,Readfilenamefull,Tempdir);
             count++;
         }
 
     }
 
     //Splitting file name and copying file to specific folder
-    public boolean splitname(String Name, String Fullfilename)
+    public boolean splitname(String Name, String Fullfilename, File Tempdir)
     {
         String Split[] = Name.split("_");
         String Type =  Split[0];
@@ -175,6 +189,23 @@ public void createTemp()
                     if (dir.mkdirs()) {
                         System.out.println("Directory created");
                         //copy file to this folder
+                        //String sourcePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/TongueTwister/tt_temp.3gp";
+                        File source = new File(Tempdir,Fullfilename );
+
+                        //String destinationPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/TongueTwister/tt_1A.3gp";
+                        File destination = new File(dir,Fullfilename);
+                        try
+                        {
+                            //FileUtils.copyFile(source, destination);
+                            FileUtils.moveFile(source, destination);
+                        }
+                        catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+
+
+                        //
                     } else {
                         System.out.println("Directory is not created");
                     }
@@ -182,6 +213,21 @@ public void createTemp()
                 {
                     System.out.println("Directory already created");
                     //copy file to this folder
+                    File source = new File(Tempdir,Fullfilename );
+
+                    //String destinationPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/TongueTwister/tt_1A.3gp";
+                    File destination = new File(dir,Fullfilename);
+                    try
+                    {
+                        //FileUtils.copyFile(source, destination);
+                        FileUtils.moveFile(source, destination);
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+
+                    //
                 }
             }catch(Exception e){
                 e.printStackTrace();
