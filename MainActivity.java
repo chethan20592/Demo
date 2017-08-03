@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import android.widget.ListView;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     Button b1, b2;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     {
         b1 = (Button)findViewById(R.id.button);
 
+
         b1.setOnClickListener(new View.OnClickListener() {
 
             private static final String TAG = "MyFirebaseIIDService";
@@ -105,19 +107,25 @@ public class MainActivity extends AppCompatActivity {
                 } else{
                     Toast.makeText(getApplicationContext(), "File path is incorrect.", Toast.LENGTH_LONG).show();
             }*/
-                String filename = "temp";
+                getfilename();
+                launchActivity();
+               /*String filename = "temp";
                 File myDirect = getFilesDir();
                 File Specificdir = new File(myDirect,filename);
                 File[] files = Specificdir.listFiles();
+                String[] Sfiles = new String[files.length];
+                for (int i = 0; i < files.length; i++) {
+                    Sfiles[i] = files[i].getName();
+                }
                 //int count = 0;
                 //for(int i =1; i<=files.length; i++)
 
-                ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                        R.layout.activity_listview, files);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),
+                        R.layout.activity_listview, Sfiles);
 
                 ListView listView = (ListView) findViewById(R.id.Specificdir);
-                listView.setAdapter(adapter);
-                getfilename();
+                listView.setAdapter(adapter);*/
+
             }
 
 });
@@ -234,6 +242,12 @@ public void createTemp()
             }
         }
         return true;
+    }
+
+    private void launchActivity() {
+
+        Intent intent = new Intent(this, Main2Activity.class);
+        startActivity(intent);
     }
 
 }
